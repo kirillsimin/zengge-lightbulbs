@@ -135,15 +135,17 @@ The following examples can help you further understand the structure of the body
 
 Firmware 11 has a very different signature and uses 23 bytes instead of 8 (or 9). Here are some parts I've been able to decipher:
 
-b0b1b2b3000102 -- header, always the same
-34 -- counter, keeps ticking up
-000ee00100 -- filler ??
-b1 - white / a1 - color
-000000 - white, HEX values for Hue / 2, Saturation , Value if color (ie 006464)
-00 -- warm / 64 cool
-64 -- brightness for white
-0000140000 -- filler?
-24 -- checksum
+
+**b0b1b2b3000102** -- header, always the same  
+**34** -- counter, keeps ticking up  
+**000ee00100** -- filler ??  
+**b1** - white / **a1** - color  
+**000000** - white, HEX values for Hue / 2, Saturation , Value if color (ie **006464**)  
+**00** -- warm / **64** cool  
+**64** -- brightness for white  
+**0000140000** -- filler?  
+**24** -- checksum  
+
 
 | Header          | Counter | Filler       | Type  | White/Color HEX  | Warm/Cool | Brightness | Filler     | Checksum |
 | -------------- | -------- | ----------- | ----- | ---------------- | --------- | ---------- | ---------- | -------- |
