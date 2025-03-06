@@ -22,8 +22,6 @@ class Zengge:
             s.close()
             response = [hex(s).replace('0x', '') for s in response[0]]
             response = ['0' + s if len(s) == 1 else s for s in response]
-        
-            print(response)
 
             # format and print out
             power = response[2]
