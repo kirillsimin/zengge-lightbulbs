@@ -90,18 +90,18 @@ class Zengge:
     def add_header(self):
         pass
 
-    def process_white(self, white):
-        temp, brightness = map(int, white) 
+    def _calculate_white_hex(self, white):
+        """Helper to calculate warm and cold hex values from white input."""
+        temp, brightness = map(int, white)
 
         warm = ((255 - temp) * brightness) // 255
         cold = (temp * brightness) // 255
 
-        warm_hex = f"{warm:02x}"
-        cold_hex = f"{cold:02x}"
+        return f"{warm:02x}", f"{cold:02x}"
 
-        values = self.process_raw(f"31:00:00:00:{warm_hex}:{cold_hex}:0f")
-
-        return values
+    def process_white(self, white):
+        warm_hex, cold_hex = self._calculate_white_hex(white)
+        return self.process_raw(f"31:00:00:00:{warm_hex}:{cold_hex}:0f")
 
     def process_raw(self, raw):
         raw = raw.split(':')
@@ -109,13 +109,18 @@ class Zengge:
         values = [int(v, 16) for v in values]
         return values
 
-    def process_rgb(self, rgb):
-        rgb = rgb.split(',')
-        if len(rgb) < 3:
+    def _parse_rgb(self, rgb):
+        """Helper to parse and validate RGB input."""
+        rgb_values = rgb.split(',')
+        if len(rgb_values) < 3:
             self.print_error('Must have three color values (0-255) for R,G,B')
-        values = [int(v) for v in rgb]
-        values.insert(0, 49)        
-        values.extend([0, 240, 15])
+        values = [int(v) for v in rgb_values]
+        values.insert(0, 49)
+        return values
+
+    def process_rgb(self, rgb):
+        values = self._parse_rgb(rgb)
+        values.extend([0, 240, 15])  # Common RGB suffix
         return values
 
     def process_power(self, power):
