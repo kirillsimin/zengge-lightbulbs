@@ -7,19 +7,19 @@ class Zengge:
         self.ip = ip
 
     def add_checksum(self, values):
-        checksum = int(hex(sum(values) & 0xff), 16)
-        values.append(checksum)
-        return values
+        command = bytearray(values)
+        checksum = sum(values) % 256
+        command.append(checksum)
+        return command
 
     def get_status(self):
         try:
             data = bytearray(self.process_raw('81:8a:8b:96'))
             s = socket.socket()
-            s.settimeout(5)
+            s.settimeout(3)
             s.connect((self.ip, 5577))
             s.send(data)
             response = s.recvfrom(1024)
-            s.close()
             response = [hex(s).replace('0x', '') for s in response[0]]
             response = ['0' + s if len(s) == 1 else s for s in response]
 
@@ -45,10 +45,9 @@ class Zengge:
         try:
             data = b"HF-A11ASSISTHREAD"
             s = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-            s.settimeout(5)
+            s.settimeout(3)
             s.sendto(data, (self.ip, 48899))
             response = s.recvfrom(1024)
-            s.close()
             msg = response[0].decode('utf-8')
             version = msg.split(',')
             return version[2]
@@ -60,10 +59,9 @@ class Zengge:
         try:
             data = b"HF-A11ASSISTHREAD"
             s = socket.socket(family=socket.AF_INET, type=socket.SOCK_DGRAM)
-            s.settimeout(5)
+            s.settimeout(3)
             s.sendto(data, (self.ip, 48899))
             response = s.recvfrom(1024)
-            s.close()
             msg = response[0].decode('utf-8')
             version = msg.split(',')
             print(version)
@@ -73,12 +71,11 @@ class Zengge:
 
     def send(self, values):
         try:
-            self.get_version()
+            command = self.add_checksum(values)
             s = socket.socket()
-            s.settimeout(5)
+            s.settimeout(3)
             s.connect((self.ip, 5577))
-            s.send(bytearray(self.add_checksum(values)))
-            s.close()
+            s.sendall(command)
             print(json.dumps({"success": True}))
         except:
             self.print_error("Could not send the message to the bulb")

@@ -1,5 +1,3 @@
-import socket
-import json
 from .zengge import Zengge
 
 class Zengge9Byte(Zengge):
