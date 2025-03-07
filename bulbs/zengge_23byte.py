@@ -23,8 +23,8 @@ class Zengge23Byte(Zengge):
         h, s, v = colorsys.rgb_to_hsv(r / 255.0, g / 255.0, b / 255.0)
 
         half_hue = int((h * 360) / 2)  # Hue is divided by 2 (would love to know why!)
-        saturation = int(s * 255)
-        value = int(v * 255)
+        saturation = int(s * 100)
+        value = int(v * 100)
 
         half_hue_hex = f"{half_hue:02x}"
         saturation_hex = f"{saturation:02x}"
